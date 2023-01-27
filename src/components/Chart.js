@@ -2,12 +2,12 @@ import React from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { Box } from "@mui/material";
-import { ChartData } from "../utils/chartData";
+import { useChartData } from "../utils/chartData";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export function Chart({ type }) {
-  const data = ChartData(type);
+  const data = useChartData(type);
   return (
     <Box
       width="280px"

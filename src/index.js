@@ -11,7 +11,10 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>
   <BrowserRouter>
-    <SpeechProvider appId={process.env.SPEECHLY_API_KEY} language="en-US">
+    <SpeechProvider
+      appId={process.env.REACT_APP_SPEECHLY_API_KEY}
+      language="en-US"
+    >
       <AuthProvider>
         <AppProvider>
           <App />

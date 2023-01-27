@@ -21,6 +21,7 @@ const LoginCard = () => {
     if (user != null) {
       navigate("/tracker");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   return (

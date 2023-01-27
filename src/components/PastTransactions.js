@@ -3,19 +3,34 @@ import { Box, Card, CardContent, Stack, Typography } from "@mui/material";
 import { AppContext } from "../context/context";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AmountCard from "./AmountCard";
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc, query, where, onSnapshot } from "firebase/firestore";
+import { AuthContext } from "../context/AuthContext";
 
 const PastTransactions = () => {
-  const { transactionRef, transac, getTransactions } = useContext(AppContext);
+  const { transactionRef, transac, setTransac } = useContext(AppContext);
+  const { user } = useContext(AuthContext);
 
   const deleteTransaction = async (id) => {
     const deletedTransac = doc(transactionRef, id);
     deleteDoc(deletedTransac);
-    getTransactions();
   };
 
+  console.log(transac);
+
   useEffect(() => {
-    getTransactions();
+    let current;
+    if (user) current = user.uid;
+    const q = query(transactionRef, where("userID", "==", current));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const trand = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      console.log(trand);
+      setTransac(trand);
+    });
+    return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

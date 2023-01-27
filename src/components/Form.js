@@ -24,8 +24,7 @@ const Form = () => {
     date: "",
   };
 
-  const { types, categories, transactionRef, getTransactions } =
-    useContext(AppContext);
+  const { types, categories, transactionRef } = useContext(AppContext);
   const { user } = useContext(AuthContext);
   const { segment } = useSpeechContext();
 
@@ -56,7 +55,6 @@ const Form = () => {
     transaction = { ...transaction, userID: user.uid };
     await addDoc(transactionRef, transaction);
     setTransaction(initialState);
-    getTransactions();
   };
 
   const handleChange = (e) => {
@@ -70,6 +68,7 @@ const Form = () => {
   useEffect(() => {
     if (segment) {
       if (segment.intent.intent === "add_expense") {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         transaction = { ...transaction, type: "expense" };
         setTransaction(transaction);
       } else if (segment.intent.intent === "add_income") {
@@ -123,9 +122,12 @@ const Form = () => {
         }
       });
 
+      const amountCheck = parseInt(transaction.amount);
+
       if (
         segment.isFinal &&
         transaction.amount &&
+        amountCheck &&
         transaction.category &&
         transaction.type &&
         transaction.date

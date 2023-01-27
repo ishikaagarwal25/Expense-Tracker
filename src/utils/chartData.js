@@ -1,8 +1,13 @@
-import { incomeCategories, expenseCategories } from "../constants/categories";
+import {
+  incomeCategories,
+  expenseCategories,
+  resetCategories,
+} from "../constants/categories";
 import { AppContext } from "../context/context";
 import { useContext } from "react";
 
-export const ChartData = (type) => {
+export const useChartData = (type) => {
+  resetCategories();
   const { transac } = useContext(AppContext);
 
   let specificTransactions = transac.filter((current) => current.type === type);
@@ -11,6 +16,7 @@ export const ChartData = (type) => {
     type === "expense" ? expenseCategories : incomeCategories;
 
   specificTransactions.forEach((element) => {
+    console.log("running");
     let amt = 0;
     const category = currentCategories.find((c) => c.type === element.category);
     if (category) {
@@ -22,6 +28,8 @@ export const ChartData = (type) => {
   const filteredCategories = currentCategories.filter(
     (current) => current.amount > 0
   );
+
+  console.log(incomeCategories);
 
   const data = {
     labels: filteredCategories.map((category) => category.type),

@@ -1,13 +1,11 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useState } from "react";
 import { incomeCategories, expenseCategories } from "../constants/categories";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection } from "firebase/firestore";
 import { db } from "../firebase";
-import { AuthContext } from "./AuthContext";
 
 const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
-  const { user } = useContext(AuthContext);
   let categories = [
     ...incomeCategories.map((current) => current.type),
     ...expenseCategories.map((current) => current.type),
@@ -31,23 +29,6 @@ const AppProvider = ({ children }) => {
     .filter((current) => current.type === "income")
     .reduce((total, current) => (total += parseInt(current.amount)), 0);
 
-  let current;
-  if (user) current = user.uid;
-
-  const getTransactions = async () => {
-    try {
-      const q = query(transactionRef, where("userID", "==", current));
-      const querySnapshot = await getDocs(q);
-      const trand = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setTransac(trand);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const transactionRef = collection(db, "transactions");
   return (
     <AppContext.Provider
@@ -60,7 +41,6 @@ const AppProvider = ({ children }) => {
         transac,
         setTransac,
         transactionRef,
-        getTransactions,
       }}
     >
       {children}
